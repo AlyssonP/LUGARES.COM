@@ -9,18 +9,16 @@ function validateEmail(email) {
 module.exports = {
     async index(req, res, next) {
         try {
-            const { id_user } = req.query
+            const { id_user } = req.params
 
-            const query = knex('usuarios').select('id' ,'nome', 'email','contato')
+            const query = await knex('usuarios').select('nome', 'email','contato', 'datanascimento').where('id', id_user)
 
-            if ( id_user ) {
-                query
-                .where('id', id_user)
+
+            if ( query.length == 0 ) {
+                return res.json('Usuário não encontrado')
             }
 
-            const results = await query
-
-            return res.json(results)
+            return res.json(query)
         } catch (error) {
             next(error)
         }
@@ -51,10 +49,7 @@ module.exports = {
                 datanascimento
             })
 
-            return res.json({
-                "nome": `${nome}`,
-                "email": `${email}`,
-            }).send()
+            return res.send()
         } catch (error) {
             next(error)
         }
@@ -111,6 +106,14 @@ module.exports = {
                 return res.json("Senha incorreta")
             }
 
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    async ImoveisUser(req, res, next) {
+        try {
+            
         } catch (error) {
             next(error)
         }

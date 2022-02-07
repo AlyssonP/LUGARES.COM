@@ -9,13 +9,15 @@ routes.get('/typeimoveis', (req, res) => {
     knex('type_imovel').then((results) => res.json(results))
 })
 
-routes.get('/users', UsuarioController.index)
+routes.get('/user/:id_user', UsuarioController.index)
+routes.get('/user/imoveis/:id', UsuarioController.ImoveisUser)
 routes.post('/users', UsuarioController.create)
 routes.put('/users/:id', UsuarioController.update)
 routes.post('/login', UsuarioController.login)
 
-routes.get('/imoveis', ImovelController.index)
+routes.get('/imovel/:id_imovel', ImovelController.index)
 routes.post('/anunciarimovel', ImovelController.create)
+routes.get('/imoveis', ImovelController.listImoveis)
 
 
 module.exports = routes
