@@ -57,15 +57,14 @@ module.exports = {
 
     async update(req, res, next) {
         try {
-            
-            const { nome, contato, datanascimento } = req.body
+            const { nome, contato, datanascimento} = req.body
             const { id } = req.params
-            
-            if( nome ) {
+
+            if( nome ){
                 await knex('usuarios')
                 .update({ nome })
                 .where({ id })
-            }
+            } 
 
             if( contato ) {
                 await knex('usuarios')
@@ -113,7 +112,19 @@ module.exports = {
 
     async ImoveisUser(req, res, next) {
         try {
-            
+            const {id_user} = req.params
+
+            console.log(id_user)
+
+            const query = await knex('imovel').select('titulo','descricao').where('id_proprietario', id_user)
+
+            if( query.length == 0 ){
+                return res.json("Ainda não tem imóvel anunciado")
+             }
+
+            return res.json(query)
+
+
         } catch (error) {
             next(error)
         }

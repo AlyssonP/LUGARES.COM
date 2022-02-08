@@ -9,15 +9,21 @@ routes.get('/typeimoveis', (req, res) => {
     knex('type_imovel').then((results) => res.json(results))
 })
 
-routes.get('/user/:id_user', UsuarioController.index)
-routes.get('/user/imoveis/:id', UsuarioController.ImoveisUser)
-routes.post('/users', UsuarioController.create)
-routes.put('/users/:id', UsuarioController.update)
-routes.post('/login', UsuarioController.login)
-
-routes.get('/imovel/:id_imovel', ImovelController.index)
-routes.post('/anunciarimovel', ImovelController.create)
-routes.get('/imoveis', ImovelController.listImoveis)
+//Usuário
+routes
+    .get('/user/:id_user', UsuarioController.index)
+    .get('/user/imoveis/:id_user', UsuarioController.ImoveisUser)
+    .post('/users', UsuarioController.create)
+    .post('/login', UsuarioController.login)
+    .put('/users/:id', UsuarioController.update)
+ 
+//Imóvel
+routes
+    .get('/imovel/:id_imovel', ImovelController.index)
+    .get('/imoveis', ImovelController.listImoveis)
+    .post('/anunciarimovel', ImovelController.create)
+    .put('/imovel/:id', ImovelController.update)
+    .delete('/imovel/:id', ImovelController.delete)
 
 
 module.exports = routes
