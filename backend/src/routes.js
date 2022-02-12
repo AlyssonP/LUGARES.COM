@@ -20,7 +20,7 @@ routes
 //Imóvel
 routes
     .get('/imovel/:id_imovel', ImovelController.index)
-    .get('/imoveis', ImovelController.listImoveis)
+    .get('/imoveis/:city', ImovelController.listImoveis)
     .post('/anunciarimovel', ImovelController.create)
     .put('/imovel/:id', ImovelController.update)
     .delete('/imovel/:id', ImovelController.delete)

@@ -10,15 +10,32 @@ module.exports = {
     async index(req, res, next) {
         try {
             const { id_user } = req.params
+            const { email, senha } = req.body
 
-            const query = await knex('usuarios').select('nome', 'email','contato', 'datanascimento').where('id', id_user)
+            const query = await knex('usuarios').select('email', 'senha').where({email})
 
-
-            if ( query.length == 0 ) {
-                return res.json('Usuário não encontrado')
+            if (!validateEmail(email)) {
+                return res.json("Este e-mail é invalido")
             }
 
-            return res.json(query)
+            if ( query.length == 0 ) {
+                return res.json("Não foi possivel encontrar o usuário")
+            }
+            
+            if (await bcrypt.compare( senha, query[0].senha)) {
+                const query = await knex('usuarios').select('nome', 'email','contato', 'datanascimento').where('id', id_user)
+
+
+                if ( query.length == 0 ) {
+                    return res.json('Usuário não encontrado')
+                }
+
+                return res.json(query)
+            } else {
+                return res.json("Senha incorreta")
+            }
+
+            
         } catch (error) {
             next(error)
         }
@@ -78,7 +95,7 @@ module.exports = {
                 .where({ id })
             }
 
-            return res.send()
+            return res.json("Atualização feita")
 
         } catch (error) {
             next(error)

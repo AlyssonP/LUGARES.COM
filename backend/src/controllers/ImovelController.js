@@ -44,7 +44,13 @@ module.exports = {
 
     async listImoveis(req, res, next) {
         try {
-            const query = await knex('imovel').select('titulo', 'descricao', 'valordiaria', 'endereco', 'city', 'uf', 'pais')
+            const {city} = req.params
+
+            const query = await knex('imovel').select('titulo', 'descricao', 'valordiaria', 'endereco', 'city', 'uf', 'pais').where({city})
+
+            if( query.length == 0 ) {
+                return res.json("Imóveis não encontrado")
+            }
 
             return res.json(query)
         } catch (error) {
@@ -192,6 +198,13 @@ module.exports = {
     async delete(req, res, next) {
         try {
             const { id } = req.params
+
+            const query = await knex('imovel').where({ id })
+
+            if( query.length == 0 ){
+                return res.json("Imóvel não encontrado")
+            }
+
 
             await knex('imovel').where({ id }).del()
 
