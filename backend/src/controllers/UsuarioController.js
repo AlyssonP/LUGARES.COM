@@ -145,5 +145,9 @@ module.exports = {
         } catch (error) {
             next(error)
         }
-    }
+    },
+
+    async minhasResevas(req, res, next) {},
+
+    async reservasImovel(req, res, next) {}
 }

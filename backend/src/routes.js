@@ -4,6 +4,7 @@ const routes = express.Router()
 
 const UsuarioController = require('./controllers/UsuarioController')
 const ImovelController = require('./controllers/ImovelController')
+const ReservaController = require('./controllers/ReservaController')
 
 routes.get('/typeimoveis', (req, res) => {
     knex('type_imovel').then((results) => res.json(results))
@@ -24,6 +25,8 @@ routes
     .post('/anunciarimovel', ImovelController.create)
     .put('/imovel/:id', ImovelController.update)
     .delete('/imovel/:id', ImovelController.delete)
+//Reserva
+
 
 
 module.exports = routes

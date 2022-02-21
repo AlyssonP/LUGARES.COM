@@ -212,5 +212,10 @@ module.exports = {
         } catch (error) {
             next(error)
         }
-    }
+    },
+
+    //Funções relacionada
+    async avaliar(req, res, next) {},
+
+    async avaliações(req, res, next) {}
 }
