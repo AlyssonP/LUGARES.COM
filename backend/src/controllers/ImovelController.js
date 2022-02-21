@@ -1,5 +1,4 @@
 const knex = require('../database')
-const { update } = require('./UsuarioController')
 
 module.exports = {
     async index(req, res, next) {
@@ -53,6 +52,29 @@ module.exports = {
             }
 
             return res.json(query)
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    async pesquisaImovel(req, res, next) {
+        try {
+            const {city = '', diacheckin, diacheckout, qtdpessoas} = req.body
+
+            const query = await knex('imovel').select('titulo', 'descricao', 'valordiaria', 'endereco', 'city', 'uf', 'pais')
+
+            if ( city == '') {
+                return res.json("Falta dizer a cidade que deseja viajar")
+            } 
+            if (qtdpessoas) {
+                query.where({city}).where({qtdpessoas})
+                return res.json(query)
+            }
+
+            query.where({city})
+            
+            return res.json(query)
+
         } catch (error) {
             next(error)
         }
@@ -214,8 +236,6 @@ module.exports = {
         }
     },
 
-    //Funções relacionada
-    async avaliar(req, res, next) {},
 
-    async avaliações(req, res, next) {}
+
 }

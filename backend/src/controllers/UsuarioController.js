@@ -147,7 +147,41 @@ module.exports = {
         }
     },
 
-    async minhasResevas(req, res, next) {},
+    async minhasResevas(req, res, next) {
+        try {
+            const {id_user} = req.params
 
-    async reservasImovel(req, res, next) {}
+            const query = await knex('reservas')
+                .select('imovel.nome','reservas.datacheckin', 'reservas.datacheckout', 'reservas.valortotalreserva')
+                .inneJoin('imovel', 'imovel.id', 'reservas.id_imovel')
+                .where('reservas.id_user', id_user)
+
+            if ( query.length == 0 ){
+                return res.json("Nenhuma encontrada reserva")
+            }
+
+            return res.json(query)
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    async reservasImovel(req, res, next) {
+        try {
+            const {id_imovel} = req.params
+
+            const query = await knex('reservas')
+                        .select('usuarios.nome','reservas.diacheckin', 'reservas.diacheckout')
+                        .innerJoin('usuarios', 'reservas.id_user', 'usuarios.id')
+                        .where('reservas.id_imovel', id_imovel)
+
+            if ( query.length == 0 ){
+                return res.json("Nenhuma encontrada reserva")
+            }
+            
+            return res.json(query)
+        } catch (error) {
+            next(error)
+        }
+    }
 }
