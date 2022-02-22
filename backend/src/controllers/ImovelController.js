@@ -61,19 +61,24 @@ module.exports = {
         try {
             const {city = '', diacheckin, diacheckout, qtdpessoas} = req.body
 
-            const query = await knex('imovel').select('titulo', 'descricao', 'valordiaria', 'endereco', 'city', 'uf', 'pais')
+            const query = knex('imovel').select('titulo', 'descricao', 'valordiaria', 'qtdpessoa','endereco', 'city', 'uf', 'pais')
 
             if ( city == '') {
                 return res.json("Falta dizer a cidade que deseja viajar")
             } 
+
             if (qtdpessoas) {
                 query.where({city}).where({qtdpessoas})
                 return res.json(query)
             }
 
-            query.where({city})
+            if (city) {
+                query.where({city})
+            }
+
+            const results = await query
             
-            return res.json(query)
+            return res.json(results)
 
         } catch (error) {
             next(error)
@@ -222,9 +227,13 @@ module.exports = {
             const { id } = req.params
 
             const query = await knex('imovel').where({ id })
+            const reservas = await knex('reservas').where('id_imovel', id)
 
             if( query.length == 0 ){
                 return res.json("Imóvel não encontrado")
+            }
+            if ( reservas.length > 0 ) {
+                return res.json("Este imovel tem reserva pendente")
             }
 
 

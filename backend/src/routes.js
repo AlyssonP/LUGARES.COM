@@ -20,6 +20,7 @@ routes
     .post('/users', UsuarioController.create)
     .post('/login', UsuarioController.login)
     .put('/users/:id', UsuarioController.update)
+    
 //Imóvel
 routes
     .get('/imovel/:id_imovel', ImovelController.index)
@@ -28,10 +29,12 @@ routes
     .post('/anunciarimovel', ImovelController.create)
     .put('/imovel/:id', ImovelController.update)
     .delete('/imovel/:id', ImovelController.delete)
+
 //Feedback
 routes
     .get('/feedbacks/:id_imovel', FeedbackController.avaliações)
     .post('/feedback/:id_imovel/:id_user', FeedbackController.avaliar)
+
 //Reserva
 routes
     .post('/reservar',ReservaController.resevar)

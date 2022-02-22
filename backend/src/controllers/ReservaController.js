@@ -13,19 +13,40 @@ module.exports = {
 
     async resevar(req, res, next) {
         try {
-            const {id_user, id_imovel, diacheckin, diacheckout, qtdPessoas, valortotalreserva} = req.body
+            const {id_user, id_imovel, diacheckin, diacheckout, qtdpessoas, valortotalreserva} = req.body
 
-            const reservaconfirmada = false
-            const reserva_ativa = true
+            if ( !id_user ) {
+                return res.json("está faltando dado")
+            }
+            if ( !id_imovel ) {
+                return res.json("está faltando dado")
+            }
+            if ( !diacheckin ) {
+                return res.json("está faltando dado")
+            }
+            if ( !diacheckout ) {
+                return res.json("está faltando dado")
+            }
+            if ( !qtdpessoas ) {
+                return res.json("está faltando dado")
+            }
+            if ( !valortotalreserva ) {
+                return res.json("está faltando dado")
+            }
+            
             await knex('reservas')
-                .insert(id_user, 
-                        id_imovel, 
-                        diacheckin, 
-                        diacheckout, 
-                        qtdPessoas, 
-                        valortotalreserva,
-                        reservaconfirmada,
-                        reserva_ativa)
+                .insert({ 
+                    id_user: id_user, 
+                    id_imovel: id_imovel, 
+                    diacheckin: diacheckin, 
+                    diacheckout: diacheckout, 
+                    qtdpessoas: qtdpessoas, 
+                    valortotalreserva: valortotalreserva,
+                    reserva_ativa: true,
+                    reservaconfirmada: false,
+                    checkindone: false,
+                    checkoutdone: false
+                })
             
             return res.json("Reserva realizada, falta efetuar o pagamento e confirmação")
 
@@ -39,7 +60,7 @@ module.exports = {
             const {id_reserva, id_user} = req.params
             const {cartao, nome, sobrenome, cpf} = req.body
             
-            const query = await knex('reservas').where({id_reserva})
+            const query = knex('reservas').where('id', id_reserva)
 
             if ( query.length == 0 ) {
                 return res.json("Reserva não encontrada")
@@ -66,13 +87,17 @@ module.exports = {
         try {
             const {id_reserva, id_user} = req.params
 
-            const query = await knex('reservas').where({id_reserva}).where({id_user})
+            const query = await knex('reservas').where('id', id_reserva).where({id_user})
 
             if ( query.length == 0 ) {
                 return res.json("Reserva não encontrada")
             }
 
-            await query.update('reserva_ativa',false)
+            if ( query[0].reserva_ativa == false ) {
+                return res.json("Essa reserva já foi cancelada")
+            }
+
+            await knex('reservas').where('id', id_reserva).where({id_user}).update('reserva_ativa',false)
 
             return res.json("Cancelamento feito com sucesso")
         } catch (error) {

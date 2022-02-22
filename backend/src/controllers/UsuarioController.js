@@ -152,8 +152,8 @@ module.exports = {
             const {id_user} = req.params
 
             const query = await knex('reservas')
-                .select('imovel.nome','reservas.datacheckin', 'reservas.datacheckout', 'reservas.valortotalreserva')
-                .inneJoin('imovel', 'imovel.id', 'reservas.id_imovel')
+                .select('imovel.titulo','reservas.diacheckin', 'reservas.diacheckout', 'reservas.valortotalreserva')
+                .innerJoin('imovel', 'imovel.id', 'reservas.id_imovel')
                 .where('reservas.id_user', id_user)
 
             if ( query.length == 0 ){
