@@ -1,6 +1,7 @@
 const knex = require('../database')
 
 module.exports = {
+    //Listagem
     async index(req, res, next) {
         try {
             const {id_imovel} = req.params
@@ -84,7 +85,18 @@ module.exports = {
             next(error)
         }
     },
+    async tipoImovel(req, res, next) {
+        try {
+            const {type} = req.query
 
+            
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    async filtroPreco(req, res, next) {},
+    //Criação
     async create(req, res, next) {
         try {
             const { 
@@ -124,7 +136,7 @@ module.exports = {
             
         }
     },
-
+    //Atualização
     async update(req, res, next) {
         try {
             const { id } = req.params
@@ -221,7 +233,7 @@ module.exports = {
             next(error)
         }
     },
-
+    //Exclusão
     async delete(req, res, next) {
         try {
             const { id } = req.params

@@ -83,6 +83,10 @@ module.exports = {
         }
     },
 
+    async checkin(req, res, next) {},
+
+    async checkout(req, res, next) {},
+
     async cancelarReserva(req, res, next) {
         try {
             const {id_reserva, id_user} = req.params
