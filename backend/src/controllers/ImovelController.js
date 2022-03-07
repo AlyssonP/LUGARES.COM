@@ -87,15 +87,33 @@ module.exports = {
     },
     async tipoImovel(req, res, next) {
         try {
-            const {type} = req.query
+            const {type} = req.params
 
-            
+            const query = await knex('imovel').select('titulo', 'descricao', 'valordiaria', 'endereco', 'city', 'uf', 'pais').where('id_tipoimovel', type)
+
+            return res.json(query)
         } catch (error) {
             next(error)
         }
     },
 
-    async filtroPreco(req, res, next) {},
+    async filtroPreco(req, res, next) {
+        try {
+            const {menorPreco, maiorPreco} = req.body
+
+            const query = await knex('imovel')
+                        .select('titulo', 'descricao', 'valordiaria', 'endereco', 'city', 'uf', 'pais')
+                        .where('valordiaria', '>', menorPreco).andWhere('valordiaria', '>=', menorPreco)
+
+            if (query.length == 0) {
+                return res.json("Imóvel não encontrado")
+            }
+
+            return res.json(query) 
+        } catch (error) {
+            next(error)
+        }
+    },
     //Criação
     async create(req, res, next) {
         try {

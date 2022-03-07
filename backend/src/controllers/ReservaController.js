@@ -83,9 +83,56 @@ module.exports = {
         }
     },
 
-    async checkin(req, res, next) {},
+    async checkin(req, res, next) {
+        try {
+            const {id_reserva} = req.params
+            const {data} = req.body
 
-    async checkout(req, res, next) {},
+            const query = await knex('reservas').where('id', id_reserva)
+            
+            if(query.length = 0) {
+                return res.json('Reverva não encontrada')
+            }
+
+            if(query[0].checkindone == true) {
+                return res.json('O check-in já foi feito')
+            }
+
+            await knex('reservas').where('id', id_reserva).update('checkindone', true)
+
+            return res.json('Check-in feito com sucesso!')
+            
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    async checkout(req, res, next) {
+        try {
+            const {id_reserva} = req.params
+            const {data} = req.body
+
+            const query = await knex('reservas').where('id', id_reserva)
+            
+            if(query.length = 0) {
+                return res.json('Reverva não encontrada')
+            }
+
+            if(query[0].checkindone == false) {
+                return res.json('O check-out não pode ser feito, precisa fazer o check-in antes')
+            }
+
+            if(query[0].checkoutdone == true) {
+                return res.json('O check-out já foi feito')
+            }
+
+            await knex('reservas').where('id', id_reserva).update('checkoutdone', true)
+
+            return res.json('Check-out feito com sucesso!')
+        } catch (error) {
+            next(error)
+        }
+    },
 
     async cancelarReserva(req, res, next) {
         try {
