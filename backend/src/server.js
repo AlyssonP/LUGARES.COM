@@ -9,6 +9,8 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(routes)
 
+app.use('/upload', express.static(path.resolve(__dirname, '..', 'tmp', 'uploads')))
+
 //notFound
 app.use((req, res, next) => {
     const error = new Error('Not found')

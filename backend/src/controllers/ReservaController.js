@@ -1,4 +1,29 @@
 const knex = require('../database')
+function convertData(data) {
+    let dia, mes, ano = ''
+            
+    var meses = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+    var mesesNum = ['01','02','03','04','05','06','07','08','09','10','11','12']
+
+    const datatxt = String(data)
+    const fatias = datatxt.split(' ')
+    dia = fatias[2]
+    mesText = fatias[1]
+    ano = fatias[3]
+
+    let i = 0
+    while (i < 12) {
+        if (meses[i] == mesText) {
+            mes = mesesNum[i]
+            break
+        }
+        i++
+    }
+
+    res = `${dia}/${mes}/${ano}`
+
+    return res;
+  }
 
 module.exports = {
     async index(req, res, next) {
@@ -90,14 +115,20 @@ module.exports = {
 
             const query = await knex('reservas').where('id', id_reserva)
             
-            if(query.length = 0) {
+            if(query.length == 0) {
                 return res.json('Reverva não encontrada')
             }
-
+            
             if(query[0].checkindone == true) {
                 return res.json('O check-in já foi feito')
             }
 
+            n = query[0].diacheckin
+            dataTest = convertData(n)
+
+            if(dataTest != data) {
+                return res.json('Ainda não é a dia de fazer check-in')
+            }
             await knex('reservas').where('id', id_reserva).update('checkindone', true)
 
             return res.json('Check-in feito com sucesso!')
@@ -114,7 +145,7 @@ module.exports = {
 
             const query = await knex('reservas').where('id', id_reserva)
             
-            if(query.length = 0) {
+            if(query.length == 0) {
                 return res.json('Reverva não encontrada')
             }
 
@@ -124,6 +155,13 @@ module.exports = {
 
             if(query[0].checkoutdone == true) {
                 return res.json('O check-out já foi feito')
+            }
+
+            n = query[0].diacheckout
+            dataTest = convertData(n)
+
+            if(dataTest != data) {
+                return res.json('Ainda não é a dia de fazer check-out')
             }
 
             await knex('reservas').where('id', id_reserva).update('checkoutdone', true)

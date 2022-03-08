@@ -85,6 +85,7 @@ module.exports = {
             next(error)
         }
     },
+
     async tipoImovel(req, res, next) {
         try {
             const {type} = req.params
@@ -99,11 +100,11 @@ module.exports = {
 
     async filtroPreco(req, res, next) {
         try {
-            const {menorPreco, maiorPreco} = req.body
+            const {menorpreco, maiorpreco} = req.body
 
             const query = await knex('imovel')
                         .select('titulo', 'descricao', 'valordiaria', 'endereco', 'city', 'uf', 'pais')
-                        .where('valordiaria', '>', menorPreco).andWhere('valordiaria', '>=', menorPreco)
+                        .whereRaw(`valordiaria >= ${menorpreco} and valordiaria <= ${maiorpreco}`)
 
             if (query.length == 0) {
                 return res.json("Imóvel não encontrado")
@@ -154,6 +155,7 @@ module.exports = {
             
         }
     },
+
     //Atualização
     async update(req, res, next) {
         try {
@@ -251,6 +253,7 @@ module.exports = {
             next(error)
         }
     },
+
     //Exclusão
     async delete(req, res, next) {
         try {
@@ -275,6 +278,31 @@ module.exports = {
         }
     },
 
+    async upload(req, res, next) {
+        try {
+            const {id_imovel} = req.params
 
+            const url = `http://localhost:3333/upload/${req.file.filename}`
+            await knex('images_imovel')
+                .insert({id_imovel: id_imovel,
+                         url_imagem: url})
+
+            return res.json("UPLOAD FEITO COM SUCESSO")
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    async imgImovel(req, res, next) {
+        try {
+            const {id_imovel} = req.params
+
+            const query = await knex('images_imovel').select('url_imagem').where({id_imovel})
+
+            return res.json(query)
+        } catch (error) {
+            next(error)
+        }
+    }
 
 }

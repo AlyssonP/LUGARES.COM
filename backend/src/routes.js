@@ -2,6 +2,9 @@ const express = require('express')
 const knex = require('./database')
 const routes = express.Router()
 
+const multer = require('multer')
+const multerConfig = require('./config/multer')
+
 const UsuarioController = require('./controllers/UsuarioController')
 const ImovelController = require('./controllers/ImovelController')
 const FeedbackController = require('./controllers/FeedbackController')
@@ -26,9 +29,13 @@ routes
     .get('/imovel/:id_imovel', ImovelController.index)
     .get('/imoveis/:city', ImovelController.listImoveis)
     .get('/pesquisarimovel', ImovelController.pesquisaImovel)
+    .get('/tipoimovel/:type', ImovelController.tipoImovel)
+    .get('/filtropreco', ImovelController.filtroPreco)
     .post('/anunciarimovel', ImovelController.create)
     .put('/imovel/:id', ImovelController.update)
     .delete('/imovel/:id', ImovelController.delete)
+    .post('/uploadimgimovel/:id_imovel', multer(multerConfig).single('file'), ImovelController.upload)
+    .get('/urlimgimovel/:id_imovel', ImovelController.imgImovel)
 
 //Feedback
 routes
@@ -40,6 +47,8 @@ routes
     .post('/reservar',ReservaController.resevar)
     .post('/confirmar_reserva/:id_reserva/:id_user', ReservaController.confirmarReserva)
     .post('/cancelar_reserva/:id_reserva/:id_user', ReservaController.cancelarReserva)
+    .post('/checkin/:id_reserva/:id_user', ReservaController.checkin)
+    .post('/checkout/:id_reserva/:id_user', ReservaController.checkout)
 
 
 module.exports = routes
